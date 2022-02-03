@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-          title: Text('Instagram'),
+          title: Text('Instagram Test'),
         actions: [IconButton(
          icon: Icon(Icons.add_box_outlined),
          onPressed: (){},
