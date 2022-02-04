@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
+// import 할 때 변수 중복 문제 피하기 위해 as로 지정i
+import './style.dart' as style;
 
 void main() {
   runApp(
       MaterialApp(
-        theme: ThemeData(
-          iconTheme: IconThemeData(color: Colors.blue),
-          appBarTheme: AppBarTheme(color: Colors.white,
-          titleTextStyle: TextStyle(color: Colors.black),
-              actionsIconTheme: IconThemeData(color: Colors.black)
-          ),
-
-        ),
+        theme: style.theme,
         home: MyApp()
       )
       );
