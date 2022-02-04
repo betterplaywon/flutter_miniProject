@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 할 때 변수 중복 문제 피하기 위해 as로 지정i
+// import 할 때 변수 중복 문제 피하기 위해 as로 지정
 import './style.dart' as style;
 
 void main() {
