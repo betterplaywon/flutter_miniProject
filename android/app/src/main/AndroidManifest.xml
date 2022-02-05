@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.instagram">
+
+<!--    인터넷 사용 허가를 위한 코드, android에만 해당-->
+    <uses-permission android:name='android.permission.INTERNET'/>
+
    <application
         android:label="instagram"
         android:name="${applicationName}"
