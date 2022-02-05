@@ -26,6 +26,15 @@ class MyApp extends StatelessWidget {
         )],
       ),
       body: Text('insta'),
+      bottomNavigationBar: BottomNavigationBar(
+       items: <BottomNavigationBarItem>[
+         BottomNavigationBarItem(
+             icon: Icon(Icons.home_outlined),label: 'home'),
+         BottomNavigationBarItem(
+           icon: Icon(Icons.shopping_bag_outlined),label: 'shpping'
+         )
+       ],
+      )
     );
   }
 }
