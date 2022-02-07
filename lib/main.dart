@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 // import 할 때 변수 중복 문제 피하기 위해 as로 지정
 import './style.dart' as style;
-import './Home.dart';
 
 void main() {
   runApp(
@@ -26,12 +25,14 @@ class _MyAppState extends State<MyApp> {
 
   //현재 tab의 state 저장
   var tab = 0;
-var responseHomeData = [];
+var responseData = [];
   //initState 내부에서는 async,await 처리가 안되어 server 데이터를 불러오는 함수 작성.
   serverResponse() async{
    var getData = await http.get(Uri.parse('https://codingapple1.github.io/app/data.json'));
    var decodeGetData = jsonDecode(getData.body);
-
+setState(() {
+  responseData = decodeGetData;
+});
    if(getData.statusCode == 200) {
      print(decodeGetData);
    } else {
@@ -58,7 +59,7 @@ var responseHomeData = [];
          onPressed: (){},
         )],
       ),
-      body: [Home(),Text('data')][tab],
+      body: [Home(responseData : responseData),Text('data')][tab],
       bottomNavigationBar: BottomNavigationBar(
         //ontab의 매개변수를 index로 활용한 페이지 전환
         onTap: (ele){ setState(() {
@@ -73,5 +74,31 @@ var responseHomeData = [];
        ],
       )
     );
+  }
+}
+
+class Home extends StatelessWidget {
+  const Home({Key? key, this.responseData}) : super(key: key);
+
+  final responseData;
+
+  @override
+  Widget build(BuildContext context) {
+    // isNotEmpty 메서드를 사용해 데이터가 존재할 때를 표기
+    if(responseData.isNotEmpty){
+      return ListView.builder(itemCount:3, itemBuilder: (ele, i){
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.network('https://aws1.discourse-cdn.com/auth0/original/2X/c/cc8e03e6ceb862b620c6a71ce6c76e8afac5736d.png'),
+            Text('금요일'),
+            Text('me'),
+            Text(responseData[i]['content'])
+          ],
+        );
+      });
+    } else {
+      return CircularProgressIndicator();
+    }
   }
 }
