@@ -5,7 +5,8 @@ import 'dart:convert';
 import './style.dart' as style;
 //scroll control에 유용한 library
 import 'package:flutter/rendering.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main() {
   runApp(
@@ -63,7 +64,10 @@ setState(() {
           title: Text('Daily Dairy'),
         actions: [IconButton(
          icon: Icon(Icons.add_box_outlined),
-         onPressed: (){Navigator.push(context,
+         onPressed: () async{
+           var picker = ImagePicker();
+           var image = await picker.pickImage(source: ImageSource.gallery);
+           Navigator.push(context,
          MaterialPageRoute(builder: (context){return Upload();})
          );
          },
