@@ -29,6 +29,8 @@ class _MyAppState extends State<MyApp> {
 
   var tab = 0;
 var responseData = [];
+var userImage;
+
   //initState 내부에서는 async,await 처리가 안되어 server 데이터를 불러오는 함수 작성.
   serverResponse() async{
    var getData = await http.get(Uri.parse('https://codingapple1.github.io/app/data.json'));
@@ -67,8 +69,14 @@ setState(() {
          onPressed: () async{
            var picker = ImagePicker();
            var image = await picker.pickImage(source: ImageSource.gallery);
+         if(image != null) {
+           setState(() {
+             userImage = File(image.path);
+           });
+         }
+
            Navigator.push(context,
-         MaterialPageRoute(builder: (context){return Upload();})
+         MaterialPageRoute(builder: (context)=> Upload(userImage : userImage))
          );
          },
         )],
@@ -93,15 +101,19 @@ setState(() {
 
 // 이미지 업로드 예시 Cunstom Widget 생성
 class Upload extends StatelessWidget {
-  const Upload({Key? key}) : super(key: key);
+  const Upload({Key? key, this.userImage}) : super(key: key);
+  final userImage;
+
   @override
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(actions: [IconButton(onPressed: (){}, icon: Icon(Icons.send))],),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Image.file(userImage),
+            TextField(),
             Text('이미지업로드화면'),
             IconButton(
                 onPressed: (){Navigator.pop(context);},
