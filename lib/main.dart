@@ -30,6 +30,14 @@ class _MyAppState extends State<MyApp> {
   var tab = 0;
 var responseData = [];
 var userImage;
+var userComent;
+
+setUserContent(a){
+  setState(() {
+    userComent = a;
+  });
+}
+
 
   //initState 내부에서는 async,await 처리가 안되어 server 데이터를 불러오는 함수 작성.
   serverResponse() async{
@@ -76,7 +84,7 @@ setState(() {
          }
 
            Navigator.push(context,
-         MaterialPageRoute(builder: (context)=> Upload(userImage : userImage))
+         MaterialPageRoute(builder: (context)=> Upload(userImage : userImage, setUserComent:setUserComent))
          );
          },
         )],
@@ -91,7 +99,7 @@ setState(() {
          BottomNavigationBarItem(
              icon: Icon(Icons.home_outlined),label: 'home'),
          BottomNavigationBarItem(
-           icon: Icon(Icons.shopping_bag_outlined),label: 'shpping'
+           icon: Icon(Icons.shopping_bag_outlined),label: 'shopping'
          )
        ],
       )
@@ -101,8 +109,9 @@ setState(() {
 
 // 이미지 업로드 예시 Cunstom Widget 생성
 class Upload extends StatelessWidget {
-  const Upload({Key? key, this.userImage}) : super(key: key);
+  const Upload({Key? key, this.userImage, this.setUserComent}) : super(key: key);
   final userImage;
+  final setUserComent;
 
   @override
 
@@ -113,8 +122,10 @@ class Upload extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.file(userImage),
-            TextField(),
             Text('이미지업로드화면'),
+            TextField(onChanged: (text){
+              setUserComent(text);
+            },),
             IconButton(
                 onPressed: (){Navigator.pop(context);},
                 icon: Icon(Icons.close)
