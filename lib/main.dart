@@ -71,7 +71,7 @@ setState(() {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-          title: Text('Daily Dairy'),
+          title: Text('Developause life'),
         actions: [IconButton(
          icon: Icon(Icons.add_box_outlined),
          onPressed: () async{
@@ -84,7 +84,7 @@ setState(() {
          }
 
            Navigator.push(context,
-         MaterialPageRoute(builder: (context)=> Upload(userImage : userImage, setUserComent:setUserComent))
+         MaterialPageRoute(builder: (context) => Upload(userImage : userImage))
          );
          },
         )],
@@ -126,6 +126,7 @@ class Upload extends StatelessWidget {
             TextField(onChanged: (text){
               setUserComent(text);
             },),
+            TextField(),
             IconButton(
                 onPressed: (){Navigator.pop(context);},
                 icon: Icon(Icons.close)
