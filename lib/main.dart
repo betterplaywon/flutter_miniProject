@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 // import 할 때 변수 중복 문제 피하기 위해 as로 지정
 import './style.dart' as style;
-//scroll control에 유용한 library
-import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -26,34 +24,45 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
-
   var tab = 0;
   var data = [];
   var userImage;
   var userContent;
 
-  addPostData () {
-    var myData = {
-      'id': data.length,
-      'image': userImage,
-      'likes': 5,
-      'date': 'March 25',
-      'content': userContent,
-      'liked': false,
-      'user': 'John K'
-    };
-    setState((){
-      data.insert(0, myData);
-    });
+    addMyData(){
+      var myData = {
+        'id': data.length,
+        'image': userImage,
+        'likes': 5,
+        'date': 'July 25',
+        'content': userContent,
+        'liked': false,
+        'user': 'John Kim'
+      };
+      setState(() {
+        data.insert(0, myData);
+      });
+
+    }
+
+    setUserContent(a){
+      setState((){
+        userContent = a;
+      });
+    }
+
+  //react의 useEffect와 같은 역할인 initState문을 작성해 렌더링
+  @override
+  void initState() {
+    super.initState();
+    serverResponse();
   }
 
-
-setUserContent(a){
-  setState(() {
-    userContent = a;
-  });
-}
-
+  addData(a){
+    setState(() {
+      data.add(a);
+    });
+  }
 
   //initState 내부에서는 async,await 처리가 안되어 server 데이터를 불러오는 함수 작성.
   serverResponse() async{
@@ -62,25 +71,6 @@ setUserContent(a){
 setState(() {
   data = decodeGetData;
 });
-   if(getData.statusCode == 200) {
-     print(decodeGetData);
-   } else {
-     // 예외 처리
-    throw Exception('Some other exception.');
-   }
-  }
-
-  addData(ele){
-    setState(() {
-      data.add(ele);
-    });
-  }
-
-  //react의 useEffect와 같은 역할인 initState문을 작성해 렌더링
-  @override
-  void initState() {
-    super.initState();
-    serverResponse();
   }
 
   @override
@@ -99,10 +89,14 @@ setState(() {
            });
          }
 
+
+
            Navigator.push(context,
-         MaterialPageRoute(builder: (context) => Upload(userImage : userImage,
-             addPostData : addPostData))
-         );
+         MaterialPageRoute(builder: (c) => Upload(
+             userImage: userImage,
+             setUserContent: setUserContent,
+         addMyData: addMyData))
+           );
          },
         )],
       ),
@@ -113,29 +107,29 @@ setState(() {
           tab = ele;
         }); },
        items: <BottomNavigationBarItem>[
-         BottomNavigationBarItem(
-             icon: Icon(Icons.home_outlined),label: 'home'),
-         BottomNavigationBarItem(
-           icon: Icon(Icons.shopping_bag_outlined),label: 'shopping'
+         BottomNavigationBarItem(icon: Icon(Icons.home_outlined),label: 'home'),
+         BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined),label: 'shopping'
          )
        ],
-      )
-    );
-  }
-}
+      ));
+  }}
+
 
 // 이미지 업로드 예시 Cunstom Widget 생성
 class Upload extends StatelessWidget {
-  const Upload({Key? key, this.userImage, this.setUserContent, this.addPostData}) : super(key: key);
+  const Upload({Key? key, this.userImage, this.setUserContent, this.addMyData}) : super(key: key);
   final userImage;
   final setUserContent;
-  final addPostData;
-  @override
+  final addMyData;
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         appBar: AppBar(actions: [
-          IconButton(onPressed: (){addPostData();}, icon: Icon(Icons.send))
+          IconButton(onPressed: (){
+            addMyData();
+          }, icon: Icon(Icons.send))
         ]),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,8 +138,8 @@ class Upload extends StatelessWidget {
             Text('이미지업로드화면'),
             TextField(onChanged: (text){
               setUserContent(text);
-            },),
-            TextField(),
+              print(text);
+              },),
             IconButton(
                 onPressed: (){Navigator.pop(context);},
                 icon: Icon(Icons.close)
@@ -195,12 +189,13 @@ class _HomeState extends State<Home> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-        Image.network(widget.data[i]['image']
-            ),
-            Text('금요일'),
+        widget.data[i]['image'].runtimeType == String
+          ? Image.network(widget.data[i]['image'])
+            : Image.file(widget.data[i]['image']),
             Text('me'),
-            Text(widget.data[i]['content'])
-          ],
+            // type error 발생. 문제 원인 찾아야함
+            // Text(widget.data[i]['content'])
+          ]
         );
       });
     } else {
