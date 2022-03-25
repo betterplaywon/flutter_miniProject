@@ -28,13 +28,29 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
 
   var tab = 0;
-var responseData = [];
-var userImage;
-var userComent;
+  var data = [];
+  var userImage;
+  var userContent;
+
+  addPostData () {
+    var myData = {
+      'id': data.length,
+      'image': userImage,
+      'likes': 5,
+      'date': 'March 25',
+      'content': userContent,
+      'liked': false,
+      'user': 'John K'
+    };
+    setState((){
+      data.insert(0, myData);
+    });
+  }
+
 
 setUserContent(a){
   setState(() {
-    userComent = a;
+    userContent = a;
   });
 }
 
@@ -44,7 +60,7 @@ setUserContent(a){
    var getData = await http.get(Uri.parse('https://codingapple1.github.io/app/data.json'));
    var decodeGetData = jsonDecode(getData.body);
 setState(() {
-  responseData = decodeGetData;
+  data = decodeGetData;
 });
    if(getData.statusCode == 200) {
      print(decodeGetData);
@@ -56,7 +72,7 @@ setState(() {
 
   addData(ele){
     setState(() {
-      responseData.add(ele);
+      data.add(ele);
     });
   }
 
@@ -84,12 +100,13 @@ setState(() {
          }
 
            Navigator.push(context,
-         MaterialPageRoute(builder: (context) => Upload(userImage : userImage))
+         MaterialPageRoute(builder: (context) => Upload(userImage : userImage,
+             addPostData : addPostData))
          );
          },
         )],
       ),
-      body: [Home(responseData : responseData, addData : addData),Text('data')][tab],
+      body: [Home(data : data, addData : addData),Text('data')][tab],
       bottomNavigationBar: BottomNavigationBar(
         //ontab의 매개변수를 index로 활용한 페이지 전환
         onTap: (ele){ setState(() {
@@ -109,22 +126,24 @@ setState(() {
 
 // 이미지 업로드 예시 Cunstom Widget 생성
 class Upload extends StatelessWidget {
-  const Upload({Key? key, this.userImage, this.setUserComent}) : super(key: key);
+  const Upload({Key? key, this.userImage, this.setUserContent, this.addPostData}) : super(key: key);
   final userImage;
-  final setUserComent;
-
+  final setUserContent;
+  final addPostData;
   @override
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(actions: [IconButton(onPressed: (){}, icon: Icon(Icons.send))],),
+        appBar: AppBar(actions: [
+          IconButton(onPressed: (){addPostData();}, icon: Icon(Icons.send))
+        ]),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.file(userImage),
             Text('이미지업로드화면'),
             TextField(onChanged: (text){
-              setUserComent(text);
+              setUserContent(text);
             },),
             TextField(),
             IconButton(
@@ -139,9 +158,9 @@ class Upload extends StatelessWidget {
 }
 
 class Home extends StatefulWidget {
-  const Home({Key? key, this.responseData, this.addData}) : super(key: key);
+  const Home({Key? key, this.data, this.addData}) : super(key: key);
 
-  final responseData;
+  final data;
   final addData;
 
   @override
@@ -171,15 +190,16 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     // isNotEmpty 메서드를 사용해 데이터가 존재할 때를 표기
-    if(widget.responseData.isNotEmpty){
-      return ListView.builder(itemCount:widget.responseData.length, controller: scroll, itemBuilder: (ele, i){
+    if(widget.data.isNotEmpty){
+      return ListView.builder(itemCount:widget.data.length, controller: scroll, itemBuilder: (ele, i){
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.network('https://aws1.discourse-cdn.com/auth0/original/2X/c/cc8e03e6ceb862b620c6a71ce6c76e8afac5736d.png'),
+        Image.network(widget.data[i]['image']
+            ),
             Text('금요일'),
             Text('me'),
-            Text(widget.responseData[i]['content'])
+            Text(widget.data[i]['content'])
           ],
         );
       });
