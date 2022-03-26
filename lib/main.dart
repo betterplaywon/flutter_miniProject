@@ -5,6 +5,7 @@ import 'dart:convert';
 import './style.dart' as style;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(
@@ -28,6 +29,13 @@ class _MyAppState extends State<MyApp> {
   var data = [];
   var userImage;
   var userContent;
+
+  saveData() async{
+    var storage = await SharedPreferences.getInstance();
+    //shared preferences를 통해 기존 데이터를 저장 가능.
+    storage.setString('feedText','');
+  }
+  // 텍스트만 저장 가능하므로 cached_network_image 라이브러리 적용 필요.
 
     addMyData(){
       var myData = {
@@ -55,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    saveData();
     serverResponse();
   }
 
