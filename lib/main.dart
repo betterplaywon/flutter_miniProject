@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
 // import 할 때 변수 중복 문제 피하기 위해 as로 지정
 import './style.dart' as style;
@@ -10,9 +11,12 @@ import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(
-      MaterialApp(
-        theme: style.theme,
-        home: MyApp()
+      ChangeNotifierProvider(
+        create: (c) => Store(),
+        child: MaterialApp(
+          theme: style.theme,
+          home: MyApp()
+        ),
       )
       );
     }
@@ -234,8 +238,37 @@ class Detail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Text('detail page'),
+
+      appBar: AppBar(title: Text(context.watch<Store>().name),),
+      body: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.circle),
+              Text('팔로워 ${context.watch<Store>().follower}'),
+            ],
+          ),
+          ElevatedButton(onPressed: (){
+            context.read<Store>().changeName();
+          }, child: Text('button'))
+        ],
+      ),
     );
+  }
+}
+
+class Store extends ChangeNotifier {
+  var name = 'kanxion';
+  var follower = 0;
+  changeName(){
+    name = 'betterplaywon';
+    // 재랜더링을 통해 변경된 데이터를 적용
+    if(follower == 0) {
+      follower++;
+    } else if(follower != 0){
+      follower--;
+    }
+    notifyListeners();
   }
 }
