@@ -6,6 +6,7 @@ import './style.dart' as style;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(
@@ -201,9 +202,23 @@ class _HomeState extends State<Home> {
         widget.data[i]['image'].runtimeType == String
           ? Image.network(widget.data[i]['image'])
             : Image.file(widget.data[i]['image']),
-            Text('me'),
+
+            GestureDetector(
+                child: Text('date'),
+            onTap: () {
+                  Navigator.push(context,
+               // page transition start
+               PageRouteBuilder(
+                   pageBuilder: (c, a1, a2) => Detail(),
+                    transitionsBuilder: (c, a1, a2, child) =>
+                        FadeTransition(opacity: a1, child: child),
+                 transitionDuration: Duration(milliseconds: 500)
+               )
+                  );
+            },
+            ),
             // type error 발생. 문제 원인 찾아야함
-            // Text(widget.data[i]['content'])
+            Text(widget.data[i]['content'])
           ]
         );
       });
@@ -213,3 +228,14 @@ class _HomeState extends State<Home> {
   }
 }
 
+class Detail extends StatelessWidget {
+  const Detail({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Text('detail page'),
+    );
+  }
+}
