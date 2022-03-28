@@ -7,7 +7,6 @@ import './style.dart' as style;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(
@@ -240,23 +239,47 @@ class Detail extends StatelessWidget {
     return Scaffold(
 
       appBar: AppBar(title: Text(context.watch<Store>().name),),
-      body: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.circle),
-              Text('팔로워 ${context.watch<Store>().follower}'),
-            ],
-          ),
-          ElevatedButton(onPressed: (){
-            context.read<Store>().changeName();
-          }, child: Text('button'))
+      // profile창과 같은 화면을 구현할 때 CustomScrollView를 사용.
+      body: CustomScrollView(
+        slivers: [
+         SliverToBoxAdapter(
+           child: ProfileBody()
+         ),
+          SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                  (c, i) => Container(color: Colors.grey),
+                childCount: 12
+              ),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2)
+          )
         ],
-      ),
+      )
     );
   }
 }
+
+class ProfileBody extends StatelessWidget {
+  const ProfileBody({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.circle),
+            Text('팔로워 ${context.watch<Store>().follower}'),
+          ],
+        ),
+        ElevatedButton(onPressed: (){
+          context.read<Store>().changeName();
+        }, child: Text('button'))
+      ],
+    );
+  }
+}
+
 
 class Store extends ChangeNotifier {
   var name = 'kanxion';
