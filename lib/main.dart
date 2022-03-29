@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:instagram/notification.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 // import 할 때 변수 중복 문제 피하기 위해 as로 지정
@@ -7,6 +8,7 @@ import './style.dart' as style;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'notification.dart';
 
 void main() {
   runApp(
@@ -68,6 +70,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     saveData();
+    initNotification();
     serverResponse();
   }
 
@@ -89,6 +92,13 @@ setState(() {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      // 03. 29 알림창 안 뜨는 에러 발생.
+      floatingActionButton: FloatingActionButton(
+        child:Text('alarm +'),
+        onPressed: (){
+        showNotification();
+      },
+      ),
       appBar: AppBar(
           title: Text('Developause life'),
         actions: [IconButton(
