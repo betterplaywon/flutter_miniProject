@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 final notifications = FlutterLocalNotificationsPlugin();
 
@@ -30,6 +32,8 @@ initNotification() async {
 
 showNotification() async {
 
+  tz.initializeTimeZones();
+
   var androidDetails = AndroidNotificationDetails(
     '유니크한 알림 채널 ID',
     '알림종류 설명',
@@ -45,10 +49,14 @@ showNotification() async {
   );
 
   // 알림 id, 제목, 내용 맘대로 채우기
-  notifications.show(
-      1,
-      '제목',
-      '내용',
-      NotificationDetails(android: androidDetails, iOS: iosDetails)
+  notifications.zonedSchedule(
+      2,
+      '제목2',
+      '내용2',
+      tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
+      NotificationDetails(android: androidDetails, iOS: iosDetails),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime
   );
 }

@@ -92,9 +92,9 @@ setState(() {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      // 03. 29 알림창 안 뜨는 에러 발생.
+      // 03. 30 알림창 안 뜨는 에러 발생.
       floatingActionButton: FloatingActionButton(
-        child:Text('alarm +'),
+        child:Text('+'),
         onPressed: (){
         showNotification();
       },
