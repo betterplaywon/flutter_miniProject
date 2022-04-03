@@ -9,16 +9,20 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'notification.dart';
+import 'Store.dart';
+import 'Detail.dart';
+import 'Upload.dart';
 
 void main() {
   runApp(
-      ChangeNotifierProvider(
-        create: (c) => Store(),
+    MultiProvider(providers: [
+      ChangeNotifierProvider( create: (c) => Store())
+    ],
         child: MaterialApp(
           theme: style.theme,
           home: MyApp()
         ),
-      )
+          )
       );
     }
 
@@ -138,42 +142,6 @@ setState(() {
   }}
 
 
-// 이미지 업로드 예시 Cunstom Widget 생성
-class Upload extends StatelessWidget {
-  const Upload({Key? key, this.userImage, this.setUserContent, this.addMyData}) : super(key: key);
-  final userImage;
-  final setUserContent;
-  final addMyData;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-        appBar: AppBar(actions: [
-          IconButton(onPressed: (){
-            addMyData();
-          }, icon: Icon(Icons.send))
-        ]),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.file(userImage),
-            Text('이미지업로드화면'),
-            TextField(onChanged: (text){
-              setUserContent(text);
-              print(text);
-              },),
-            IconButton(
-                onPressed: (){Navigator.pop(context);},
-                icon: Icon(Icons.close)
-            ),
-          ],
-        )
-    );
-
-  }
-}
-
 class Home extends StatefulWidget {
   const Home({Key? key, this.data, this.addData}) : super(key: key);
 
@@ -230,7 +198,7 @@ class _HomeState extends State<Home> {
                   );
             },
             ),
-            // type error 발생. 문제 원인 찾아야함
+
             Text(widget.data[i]['content'])
           ]
         );
@@ -238,70 +206,5 @@ class _HomeState extends State<Home> {
     } else {
       return CircularProgressIndicator();
     }
-  }
-}
-
-class Detail extends StatelessWidget {
-  const Detail({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-
-      appBar: AppBar(title: Text(context.watch<Store>().name),),
-      // profile창과 같은 화면을 구현할 때 CustomScrollView를 사용.
-      body: CustomScrollView(
-        slivers: [
-         SliverToBoxAdapter(
-           child: ProfileBody()
-         ),
-          SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                  (c, i) => Container(color: Colors.grey),
-                childCount: 12
-              ),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2)
-          )
-        ],
-      )
-    );
-  }
-}
-
-class ProfileBody extends StatelessWidget {
-  const ProfileBody({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.circle),
-            Text('팔로워 ${context.watch<Store>().follower}'),
-          ],
-        ),
-        ElevatedButton(onPressed: (){
-          context.read<Store>().changeName();
-        }, child: Text('button'))
-      ],
-    );
-  }
-}
-
-
-class Store extends ChangeNotifier {
-  var name = 'kanxion';
-  var follower = 0;
-  changeName(){
-    name = 'betterplaywon';
-    // 재랜더링을 통해 변경된 데이터를 적용
-    if(follower == 0) {
-      follower++;
-    } else if(follower != 0){
-      follower--;
-    }
-    notifyListeners();
   }
 }
