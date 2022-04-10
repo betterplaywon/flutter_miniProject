@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:instagram/notification.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+// import 'package:instagram/notification.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
 // import 할 때 변수 중복 문제 피하기 위해 as로 지정
 import './style.dart' as style;
-import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'dart:io';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+// 컴포넌트
 import 'notification.dart';
 import 'Store.dart';
 import 'Detail.dart';
 import 'Upload.dart';
 
-void main() {
+void main() async {
+
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider( create: (c) => Store())
@@ -96,11 +108,10 @@ setState(() {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      // 03. 30 알림창 안 뜨는 에러 발생.
       floatingActionButton: FloatingActionButton(
         child:Text('+'),
         onPressed: (){
-        showNotification();
+          showNotification();
       },
       ),
       appBar: AppBar(

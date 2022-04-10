@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 final notifications = FlutterLocalNotificationsPlugin();
 
@@ -30,13 +28,12 @@ initNotification() async {
   );
 }
 
+//원하는 곳에서 실행하면 알림 활성화
 showNotification() async {
 
-  tz.initializeTimeZones();
-
   var androidDetails = AndroidNotificationDetails(
-    '유니크한 알림 채널 ID',
-    '알림종류 설명',
+    'Test Channel ID',
+    'Test Alarm',
     priority: Priority.high,
     importance: Importance.max,
     color: Color.fromARGB(255, 255, 0, 0),
@@ -49,14 +46,10 @@ showNotification() async {
   );
 
   // 알림 id, 제목, 내용 맘대로 채우기
-  notifications.zonedSchedule(
-      2,
-      '제목2',
-      '내용2',
-      tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
-      NotificationDetails(android: androidDetails, iOS: iosDetails),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime
+  notifications.show(
+      1,
+      '제목1',
+      '내용1',
+      NotificationDetails(android: androidDetails, iOS: iosDetails)
   );
 }
